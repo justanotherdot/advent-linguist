@@ -1,51 +1,50 @@
 -- module Day01 (solveDay01) where
 module Day01 where
 
+import           Control.Monad   (mapM_)
 import           Data.Complex
-import           Data.Foldable     (foldl')
-import qualified Data.HashMap.Lazy as HM
+import           Data.Foldable   (foldl')
+import           Data.List.Split (splitOn)
+import           Text.Printf
 
-type Point = Complex Double
-
-origin :: Point
+origin :: Complex Double
 origin = 0 :+ 0
 
-north :: Point
+north :: Complex Double
 north = 0 :+ 1
 
-cleanInput :: String -> String
-cleanInput "" = ""
-cleanInput s  = take 2 s
+commands :: [String] -> [(String, Complex Double)]
+commands = map processCommand
+  where
+    processCommand s = (dir, dist)
+      where dir  = take 1 s
+            dist = (read (take 1 (drop 1 s)) :: Double) :+ 0
 
-type Command = (String, Double)
+-- √-1
+i :: Complex Double
+i = 0 :+ 1
 
-parseInput :: String -> Command
-parseInput s = (dir, dist)
-  where dir  = take 1 s
-        dist = read (take 1 $ drop 1 s) :: Double
+step :: (Complex Double, Complex Double) ->
+        (String, Complex Double)         ->
+        (Complex Double, Complex Double)
+step (heading, point) ("R", dist) = (h', (h' * dist) + point)
+  where h' = heading * conjugate i
+step (heading, point) ("L", dist) = (h', (h' * dist) + point)
+  where h' = heading * i
+step _ _                          = error "Unrecognized command"
 
-processCommand :: Command -> (Point, Point) -> Either String (Point, Point)
-processCommand ("R", dist) (dir, p) = Right (dir', p')
-  where i'    = 0 :+ (-1)
-        dist' = dist :+ 0
-        dir'  = dir * i'
-        p'    = (dir' * dist') + p
-processCommand ("L", dist) (dir, p) = Right (dir', p')
-  where i     = 0 :+ 1
-        dist' = dist :+ 0
-        dir'  = dir * i
-        p'    = (dir' * dist') + p
-processCommand _ _ = Left "Unrecognized command in input"
+processCommands :: [(String, Complex Double)] ->
+                   [(Complex Double, Complex Double)]
+processCommands = scanl step (north, origin)
 
-processAllCommands :: [Command] -> Point
-processAllCommands = snd . foldl' go (north, origin)
-  where go t c = case processCommand c t of
-                  Right x' -> x'
-                  Left  s  -> error s
+calcAns :: Complex Double -> Double
+calcAns (x :+ y) = abs x + abs y
+
+pprint :: (Complex Double, Complex Double) -> IO ()
+pprint (a0 :+ b0, a1 :+ b1) = printf "Heading: %4f + %4fi, Position: %4f + %4fi\n" a0 b0 a1 b1
 
 solveDay01 :: FilePath -> IO ()
 solveDay01 pathToInput = do
   ls <- readFile pathToInput
-  let cs = map (parseInput . cleanInput) $ words ls
-  let dest = processAllCommands cs
-  print $ abs (realPart dest) + abs (imagPart dest)
+  let cleanInput = splitOn ", " ls
+  mapM_ pprint $ processCommands . commands $ cleanInput
