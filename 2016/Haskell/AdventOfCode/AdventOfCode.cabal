@@ -18,6 +18,9 @@ library
   exposed-modules:     Day01
   build-depends:       base >= 4.7 && < 5
                      , unordered-containers
+                     , containers
+                     , hashtables
+                     , vector
                      , split
   ghc-options:         -Wall -fwarn-tabs
   default-language:    Haskell2010
