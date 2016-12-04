@@ -70,9 +70,11 @@ walk ps = go ps origin M.empty
 
 solveDay01 :: FilePath -> IO ()
 solveDay01 pathToInput = do
+  putStrLn "Solution for day one: "
   ls <- readFile pathToInput
   let cleanInput = splitOn ", " ls
   -- Part 1
   print . calcAns . processCommands . commands $ cleanInput
   -- Part 2
   print . calcAns . walk . processCommands' . commands $ cleanInput
+  putStrLn ""
