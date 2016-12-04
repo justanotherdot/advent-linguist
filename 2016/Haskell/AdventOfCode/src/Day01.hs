@@ -5,7 +5,7 @@ import           Data.Char       (isDigit)
 import           Data.Complex
 import           Data.Foldable   (foldl')
 import           Data.List.Split (splitOn)
-import           Data.Map.Strict (Map, union)
+import           Data.Map.Strict (Map)
 import qualified Data.Map.Strict as M
 
 type Point   = Complex Double
@@ -33,38 +33,47 @@ step (heading, point) ("L", dist) = (h', (h' * dist) + point)
   where h' = heading * i
 step _ _                          = error "Unrecognized command"
 
-processCommands :: [Command] -> Point
-processCommands = snd . foldl' step (north, origin)
-  where north = 0 :+ 1
+step' :: (Point, [Point]) -> Command -> (Point, [Point])
+step' (heading, points) (cmd, dist)
+  | cmd == "R" = let h' = heading * conjugate i
+                 in (h', points ++ explodePoint (h' * dist))
+  | cmd == "L" = let h' = heading * i
+                 in (h', points ++ explodePoint (h' * dist))
+  | otherwise  = error "Unrecognized command in `steps`"
 
 processCommands' :: [Command] -> [Point]
-processCommands' = map snd. scanl step (north, origin)
+processCommands' = snd . foldl' step' (north, [])
+  where north = 0 :+ 1
+
+processCommands :: [Command] -> Point
+processCommands = snd . foldl' step (north, origin)
   where north = 0 :+ 1
 
 calcAns :: Point -> Double
 calcAns (x :+ y) = abs x + abs y
 
-deltas :: [Command] -> [Point]
-deltas = drop 1 . scanl1 (flip (-)) . processCommands'
-
 explodePoint :: Point -> [Point]
-explodePoint p
-  | realPart p == 0.0  = replicate (abs . floor . imagPart $ p) (0 :+ signum (imagPart p))
-  | imagPart p == 0.0  = replicate (abs . floor . realPart $ p) (signum (realPart p) :+ 0)
-  | otherwise = error "Invalid tuple provided to `explodePoint`"
+explodePoint (x :+ y)
+  | x == 0  = replicate (abs . floor $ y) (0 :+ signum y)
+  | y == 0  = replicate (abs . floor $ x) (signum x :+ 0)
+  | otherwise = error "Invalid point provided to `explodePoint`"
 
-walk :: [Point] -> Point -> Map (Double, Double) Bool -> Point
-walk []     _ _ = error "Did not encounter any places twice"
-walk (s:ss) p m = case M.lookup (x, y) m of
-                    Just _  -> p'
-                    Nothing -> walk ss p' m'
-  where p'@(x :+ y) = p + s
-        m'          = M.insert (x, y) True m
+walk :: [Point] -> Point
+walk ps = go ps origin M.empty
+  where
+    go :: [Point] -> Point -> Map (Double, Double) Bool -> Point
+    go []     _ _ = error "Did not encounter any places twice"
+    go (s:ss) p m = case M.lookup (x, y) m of
+                        Just _  -> p'
+                        Nothing -> go ss p' m'
+      where p'@(x :+ y) = p + s
+            m'          = M.insert (x, y) True m
 
 solveDay01 :: FilePath -> IO ()
 solveDay01 pathToInput = do
   ls <- readFile pathToInput
   let cleanInput = splitOn ", " ls
+  -- Part 1
   print . calcAns . processCommands . commands $ cleanInput
-  let steps'  = concatMap explodePoint . deltas . commands $ cleanInput
-  print $ calcAns $ walk steps' origin M.empty
+  -- Part 2
+  print . calcAns . walk . processCommands' . commands $ cleanInput
