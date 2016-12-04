@@ -1,5 +1,4 @@
--- module Day01 (solveDay01) where
-module Day01 where
+module Day01 (solveDay01) where
 
 import           Data.Char       (isDigit)
 import           Data.Complex
