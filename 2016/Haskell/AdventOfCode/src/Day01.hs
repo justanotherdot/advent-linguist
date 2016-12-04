@@ -16,9 +16,9 @@ origin :: Point
 origin = 0 :+ 0
 
 commands :: [String] -> [Command]
-commands = map processCommand
+commands = map parseCommand
   where
-    processCommand s = (dir, dist)
+    parseCommand s = (dir, dist)
       where dir  = take 1 s
             dist = (read (takeWhile isDigit (drop 1 s)) :: Double) :+ 0
 
