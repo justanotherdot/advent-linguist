@@ -1,4 +1,4 @@
-module Day02 where
+module Day02 (solveDay02) where
 
 import           Data.Foldable   (foldl')
 import           Data.Map.Strict (Map)
