@@ -48,8 +48,6 @@ solveDay02 :: FilePath -> IO ()
 solveDay02 path = do
   putStrLn "Solution for day two: "
   ls <- readFile path
-  putStrLn "Part 1: "
   putStrLn . processLines transitions '5' . lines $ ls
-  putStrLn "Part 2: "
   putStrLn . processLines transitions' '5' . lines $ ls
   putStrLn ""
