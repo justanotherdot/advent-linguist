@@ -20,7 +20,6 @@ crackPassword s n
       digest = show . md5 $ doorID <> show n
       (left, right) = splitAt 5 digest
 
-
 solveDay05 :: IO ()
 solveDay05 = do
   putStrLn "Solution for day five: "
