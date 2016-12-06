@@ -26,14 +26,16 @@ library
                      , cryptonite
                      , bytestring
                      , pureMD5
-  ghc-options:         -Wall -fwarn-tabs
+                     , monad-par
+  ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
 
 executable aoc
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  ghc-options:         -Wall -fwarn-tabs
+  ghc-options:         -Wall -Werror -fwarn-tabs
+  ghc-options:         -fprof-auto
   build-depends:       base
                      , AdventOfCode
   default-language:    Haskell2010
@@ -47,7 +49,7 @@ test-suite aoc-test
                      , QuickCheck
                      , hspec
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  ghc-options:         -Wall -fwarn-tabs
+  ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
 
 source-repository head
