@@ -1,16 +1,8 @@
--- {-# LANGUAGE OverloadedStrings #-}
-
 module Day05 where
 
 import           Crypto.Hash
--- import           Data.ByteString.Builder
 import           Data.ByteString.Char8 (pack)
--- import           Data.ByteString.Char8   (all, pack, singleton)
--- import           Data.ByteString.Lazy    (ByteString, head, length, print,
---                                           splitAt, toStrict)
 import           Data.Monoid
--- import           Prelude               hiding (all, head, length, print, splitAt)
--- import           Text.Show.ByteString  (show)
 
 doorID :: String
 doorID = "reyedfim"
