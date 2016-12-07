@@ -5,6 +5,7 @@ import           Day02 (solveDay02)
 import           Day03 (solveDay03)
 import           Day04 (solveDay04)
 -- import           Day05 (solveDay05)
+import           Day06 (solveDay06)
 
 solveDay05Dummy :: IO ()
 solveDay05Dummy = do
@@ -21,3 +22,4 @@ main = do
   solveDay04 "./input/day04.in"
   -- solveDay05
   solveDay05Dummy
+  solveDay06 "./input/day06.in"
