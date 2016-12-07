@@ -25,6 +25,7 @@ library
                      , split
                      , cryptonite
                      , bytestring
+                     , bytestring-show
                      , monad-par
   ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
@@ -34,7 +35,7 @@ executable aoc
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -eventlog -with-rtsopts=-N2
   ghc-options:         -Wall -Werror -fwarn-tabs
-  -- ghc-options:         -fprof-auto
+  ghc-options:         -fprof-auto
   build-depends:       base
                      , AdventOfCode
   default-language:    Haskell2010
