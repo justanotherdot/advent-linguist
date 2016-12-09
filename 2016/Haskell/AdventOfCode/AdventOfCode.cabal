@@ -21,6 +21,7 @@ library
                      , Day04
                      , Day05
                      , Day06
+                     , Day07
   build-depends:       base >= 4.7 && < 5
                      , containers
                      , split
@@ -28,6 +29,10 @@ library
                      , bytestring
                      , bytestring-show
                      , monad-par
+                     , regex-tdfa
+                     , regex-pcre
+                     , array
+                     , vector
   ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
 
