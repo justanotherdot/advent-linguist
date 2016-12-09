@@ -15,8 +15,8 @@ inners = map snd . filter (even . fst) . init
 innersAndOuters :: [(Integer, String)] -> ([String], [String])
 innersAndOuters vs = (inners vs, outers vs)
 
-isPalindrome :: String -> Bool
-isPalindrome s = (not . null $ textMatches) && any hasDistinct textMatches
+isABBA :: String -> Bool
+isABBA s = (not . null $ textMatches) && any hasDistinct textMatches
   where
     matches :: AllTextMatches [] String
     matches       = s =~ "(.)(.)\\2\\1"
@@ -24,7 +24,7 @@ isPalindrome s = (not . null $ textMatches) && any hasDistinct textMatches
     hasDistinct x = head (take 2 x) /= last (take 2 x)
 
 hasTLS :: ([String], [String]) -> Bool
-hasTLS ios = not (any isPalindrome (fst ios)) && any isPalindrome (snd ios)
+hasTLS ios = not (any isABBA (fst ios)) && any isABBA (snd ios)
 
 calcAns :: [Bool] -> Int
 calcAns = length . filter (==True)
