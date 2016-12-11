@@ -1,6 +1,5 @@
 module Day08 where
 
--- import           Control.Monad
 import           Control.Monad.Trans.State
 import           Data.List.Split           (chunksOf, splitOn)
 import           Data.Vector               (Vector, (!), (++))
@@ -59,7 +58,7 @@ rectOn width height = do
       where
         cols = [0, 50 .. (h' * 50 -1)]
         [w', h'] = map (\x -> fromIntegral x :: Int) [w, h]
-        makeRow offset = zip [(offset :: Int) .. (w' + offset - 1)] (repeat True)
+        makeRow offset = zip [(offset :: Int) .. (w'+offset-1)] (repeat True)
 
 rotateRight :: Int -> Int -> Vector a -> Vector a
 rotateRight amount upperBound vec = prefix ++ suffix
@@ -67,10 +66,7 @@ rotateRight amount upperBound vec = prefix ++ suffix
         suffix = V.take (upperBound - amount) vec
 
 rotRow :: Integer -> Integer -> State LCDScreen ()
-rotRow rowNo qty = do
-    lcd <- get
-    let lcd' = V.update lcd $ rotRowIxs lcd rowNo qty
-    put lcd'
+rotRow rowNo qty = modify (\lcd -> V.update lcd $ rotRowIxs lcd rowNo qty)
   where
     rotRowIxs :: LCDScreen -> Integer -> Integer -> Vector (Int, Bool)
     rotRowIxs vec row amt
@@ -84,10 +80,7 @@ rotRow rowNo qty = do
         vec'   = rotateRight amt' 50 rowVec
 
 rotCol :: Integer -> Integer -> State LCDScreen ()
-rotCol colNo qty = do
-    lcd <- get
-    let lcd' = V.update lcd $ rotColIxs lcd colNo qty
-    put lcd'
+rotCol colNo qty = modify (\lcd -> V.update lcd $ rotColIxs lcd colNo qty)
   where
     rotColIxs :: LCDScreen -> Integer -> Integer -> Vector (Int, Bool)
     rotColIxs vec col amt
