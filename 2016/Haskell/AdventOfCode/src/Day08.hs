@@ -46,10 +46,7 @@ parseInput s = map toCommand ls
   where ls = filter (not . null) . lines $ s
 
 rectOn :: Integer -> Integer -> State LCDScreen ()
-rectOn width height = do
-    lcd <- get
-    let lcd' = V.update lcd . V.fromList $ rectIxs width height
-    put lcd'
+rectOn width height = modify (\lcd -> V.update lcd . V.fromList $ rectIxs width height)
   where
     rectIxs :: Integer -> Integer -> [(Int, Bool)]
     rectIxs w h
