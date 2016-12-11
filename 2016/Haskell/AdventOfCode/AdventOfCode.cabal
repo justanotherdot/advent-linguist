@@ -36,6 +36,8 @@ library
                      , vector
                      , pcre-heavy
                      , bv
+                     , transformers
+                     , mtl
   ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
 
