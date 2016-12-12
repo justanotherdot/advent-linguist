@@ -23,28 +23,30 @@ library
                      , Day06
                      , Day07
                      , Day08
+                     , Day09
   build-depends:       base >= 4.7 && < 5
-                     , containers
-                     , split
-                     , cryptonite
+                     , array
+                     , bv
                      , bytestring
                      , bytestring-show
+                     , containers
+                     , cryptonite
                      , monad-par
-                     , regex-tdfa
-                     , regex-pcre
-                     , array
-                     , vector
-                     , pcre-heavy
-                     , bv
-                     , transformers
                      , mtl
+                     , pcre-heavy
+                     , regex-pcre
+                     , regex-tdfa
+                     , split
+                     , text
+                     , transformers
+                     , vector
   ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
 
 executable aoc
   hs-source-dirs:      app
   main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -eventlog -with-rtsopts=-N2
+  ghc-options:         -O2 -threaded -rtsopts -eventlog -with-rtsopts=-N2
   ghc-options:         -Wall -Werror -fwarn-tabs
   ghc-options:         -fprof-auto
   build-depends:       base
