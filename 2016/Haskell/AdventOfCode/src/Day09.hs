@@ -8,6 +8,8 @@ import qualified Data.Text.IO   as TIO
 import           Data.Text.Read (decimal)
 import           Prelude        hiding (toInteger)
 
+data Mode = PartOne | PartTwo
+
 parseMarker :: Text -> (Integer, Integer)
 parseMarker m = (toInteger x, toInteger y)
   where
@@ -17,29 +19,27 @@ parseMarker m = (toInteger x, toInteger y)
         Right v -> fst v
         Left  _ -> error "Invalid conversion while processing nonterminal"
 
--- Not ideal to have a boolean change the behaviour of a function
--- but since this is a toy solution, might as well avoid all the duplication
--- it presents.
-evalExprs :: Bool -> Text -> Integer
-evalExprs pt2 es
+evalExprs :: Mode -> Text -> Integer
+evalExprs mode es
   | T.null es = 0
   | currElem == '(' =
       let
         (marker, es') = T.breakOn ")" (T.tail es)
         (qty, reps)   = parseMarker marker
         qty'          = fromIntegral qty :: Int
-        rst           = T.take qty' $ T.tail es'
-        len           = fromIntegral (T.length rst) :: Integer
-      in if pt2
-        then reps * evalExprs pt2 rst + evalExprs pt2 (T.drop (qty'+1) es')
-        else reps * len + evalExprs pt2 (T.drop (qty'+1) es')
-  | otherwise = 1 + evalExprs pt2 (T.tail es)
+        chunk         = T.take qty' $ T.tail es'
+        rst           = T.drop (qty'+1) es'
+        len           = fromIntegral (T.length chunk) :: Integer
+      in case mode of
+          PartOne -> reps * len + evalExprs mode (T.drop (qty'+1) es')
+          PartTwo -> reps * evalExprs mode chunk + evalExprs mode rst
+  | otherwise = 1 + evalExprs mode (T.tail es)
   where currElem = T.head es
 
 solveDay09 :: FilePath -> IO ()
 solveDay09 path = do
   s <- TIO.readFile path
   putStrLn "Solution for day nine: "
-  print . evalExprs False $ T.strip s
-  print . evalExprs True $ T.strip s
+  print . evalExprs PartOne $ T.strip s
+  print . evalExprs PartTwo $ T.strip s
   putStrLn ""
