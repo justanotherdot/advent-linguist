@@ -17,6 +17,9 @@ parseMarker m = (toInteger x, toInteger y)
         Right v -> fst v
         Left  _ -> error "Invalid conversion while processing nonterminal"
 
+-- Not ideal to have a boolean change the behaviour of a function
+-- but since this is a toy solution, might as well avoid all the duplication
+-- it presents.
 evalExprs :: Bool -> Text -> Integer
 evalExprs pt2 es
   | T.null es = 0
