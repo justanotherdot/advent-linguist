@@ -10,28 +10,26 @@ import           Prelude        hiding (toInteger)
 
 data Mode = PartOne | PartTwo
 
-parseMarker :: Text -> (Integer, Integer)
-parseMarker m = (toInteger x, toInteger y)
+parseMarker :: Text -> (Int, Int)
+parseMarker m = (toInt x, toInt y)
   where
     [x, y] = T.splitOn "x" m
-    toInteger s =
+    toInt s =
       case decimal s of
         Right v -> fst v
         Left  _ -> error "Invalid conversion while processing nonterminal"
 
-evalExprs :: Mode -> Text -> Integer
+evalExprs :: Mode -> Text -> Int
 evalExprs mode es
   | T.null es = 0
   | currElem == '(' =
       let
         (marker, es') = T.breakOn ")" (T.tail es)
         (qty, reps)   = parseMarker marker
-        qty'          = fromIntegral qty :: Int
-        chunk         = T.take qty' $ T.tail es'
-        rst           = T.drop (qty'+1) es'
-        len           = fromIntegral (T.length chunk) :: Integer
+        chunk         = T.take qty $ T.tail es'
+        rst           = T.drop (qty+1) es'
       in case mode of
-          PartOne -> reps * len + evalExprs mode (T.drop (qty'+1) es')
+          PartOne -> reps * T.length chunk + evalExprs mode rst
           PartTwo -> reps * evalExprs mode chunk + evalExprs mode rst
   | otherwise = 1 + evalExprs mode (T.tail es)
   where currElem = T.head es
