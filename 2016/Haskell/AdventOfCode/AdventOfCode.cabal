@@ -40,6 +40,7 @@ library
                      , text
                      , transformers
                      , vector
+                     , parsec
   ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
 
