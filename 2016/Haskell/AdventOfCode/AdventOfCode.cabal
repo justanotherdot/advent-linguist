@@ -24,6 +24,7 @@ library
                      , Day07
                      , Day08
                      , Day09
+                     , Day10
   build-depends:       base >= 4.7 && < 5
                      , array
                      , bv
@@ -41,6 +42,8 @@ library
                      , transformers
                      , vector
                      , parsec
+                     , attoparsec
+                     , trifecta
   ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
 
