@@ -44,6 +44,7 @@ library
                      , parsec
                      , attoparsec
                      , trifecta
+                     , async
   ghc-options:         -Wall -Werror -fwarn-tabs
   default-language:    Haskell2010
 

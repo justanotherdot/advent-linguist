@@ -1,14 +1,16 @@
 module Day10 where
 
 import           Control.Concurrent
+import           Control.Concurrent.Async
 import           Control.Monad
-import           Data.Map           (Map)
-import qualified Data.Map           as M
+import           Data.Map                 (Map)
+import qualified Data.Map                 as M
 
+type Bot     = (BotChan, Id, OutputT, OutputT, [Int])
 type BotChan = Chan Int
-type BotDir  = Map Int (BotChan, Id, OutputT, OutputT)
+type BotDir  = Map Int Bot
 data OutputT = Bot Int | Bin Int deriving (Show, Eq)
-type Id = Int
+type Id      = Int
 
 parseBotLine :: String -> (Id, OutputT, OutputT)
 parseBotLine s = (bid, loType, hiType)
@@ -26,27 +28,34 @@ parseBotLine s = (bid, loType, hiType)
               "output" -> Bin hiVal
               _        -> error $ "Parse error: couldn't parse '" ++ s ++ "'"
 
-createBot :: String ->  IO (Id, (BotChan, Id, OutputT, OutputT))
+createBot :: String ->  IO (Id, Bot)
 createBot s = do
   ch <- newChan
   let (bid, lo, hi) = parseBotLine s
-  return (bid, (ch, bid, lo, hi))
+  return (bid, (ch, bid, lo, hi, []))
 
-spawnBot :: BotDir -> (BotChan, Id, OutputT, OutputT) -> IO ()
-spawnBot dir (ch, _bid, lo, hi) = void $! forkIO (respond dir ch lo hi)
+spawnBot :: BotDir -> Bot -> IO (Async ())
+spawnBot dir bot = async (respond dir bot)
 
 sendTo :: BotDir -> Int -> OutputT -> IO ()
 sendTo dir val (Bot bid) =
   case M.lookup bid dir of
-    Just (ch, _, _, _) -> writeChan ch val
+    Just (ch, _, _, _, _) -> writeChan ch val
     Nothing            -> error $ "Cannot find bot with that ID: " ++ show bid
-sendTo _ _ _ = undefined
+sendTo _ val (Bin bid) =
+  putStrLn $ show val ++ " sent to bin " ++ show bid
 
-respond :: BotDir -> BotChan -> OutputT -> OutputT -> IO ()
-respond dir ch lo hi = do
+respond :: BotDir -> Bot -> IO ()
+respond dir (ch, bid, lo, hi, vs) = do
   x <- readChan ch
-  if x == 17 then print "hello" else print "nope"
-  respond dir ch lo hi
+  let vs' = x:vs
+  let loVal = minimum vs'
+  let hiVal = maximum vs'
+  when (loVal == 17 && hiVal == 61)
+    (putStrLn $ "Bot " ++ show bid ++ " comparing 17 and 61")
+  when (length vs' >= 2)
+    (sendTo dir loVal lo >> sendTo dir hiVal hi)
+  respond dir (ch, bid, lo, hi, vs')
 
 parseValueLine :: String -> (Int, OutputT)
 parseValueLine s = (read (ws !! 1), out)
@@ -61,8 +70,8 @@ solveDay10 path = do
   s <- readFile path
   let ls = lines s
   bs <- M.fromList <$> traverse createBot (filter ((=='b') . head) ls)
-  void $! traverse (spawnBot bs) bs
+  as <- traverse (spawnBot bs) bs
   let vs = map parseValueLine (filter ((=='v') . head) ls)
   putStrLn "Solution for day ten: "
-  mapM_ (uncurry $ sendTo bs) vs
-  putStrLn ""
+  void $! traverse (uncurry $ sendTo bs) vs
+  mapM_ wait as
