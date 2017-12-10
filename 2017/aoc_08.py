@@ -1016,7 +1016,6 @@ def parse(line):
     cond = ps[4:6] + [int(ps[6])] # Skip the 'if'
     return reg, op, int(amt), cond
 
-# Perform op by amt if cond is true.
 def eval_cond(cond):
     c_reg, c_op, c_amt = cond
     if c_op == '==':
