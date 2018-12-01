@@ -8,7 +8,6 @@ enum OpTy {
 pub fn day_01_pt_01(input: &String) -> isize {
     input.lines().into_iter()
         .map(parse_lines)
-        .inspect(|val| println!("{:?}", val))
         .fold(0, |acc, (op, num)| {
             match op {
                 OpTy::Add =>
