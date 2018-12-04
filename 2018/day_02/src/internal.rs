@@ -1,6 +1,6 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
-pub fn day01_pt01(raw_input: String) -> usize {
+pub fn day01_pt01(raw_input: &String) -> i64 {
     let mut twos_count = 0;
     let mut threes_count = 0;
     for line in raw_input.lines() {
@@ -12,12 +12,35 @@ pub fn day01_pt01(raw_input: String) -> usize {
             threes_count += 1;
         }
     }
-    // (twos_count, threes_count)
     twos_count * threes_count
 }
 
-pub fn frequency(s: &str) -> HashMap<char, usize> {
-    let mut char_counts : HashMap<char, usize> = HashMap::new();
+pub fn day01_pt02(raw_input: &String) -> String {
+    let s = String::new();
+    for id1 in raw_input.lines() {
+        for id2 in raw_input.lines() {
+            if id1 == id2 {
+                continue;
+            }
+
+            let count = id1.chars().zip(id2.chars())
+                .filter(|(c1, c2)| c1 != c2)
+                .count();
+
+            if count == 1 {
+                // exit early since we don't need to process anything else.
+                return id1.chars().zip(id2.chars())
+                    .filter(|(c1, c2)| c1 == c2)
+                    .map(|(c, _)| c)
+                    .collect();
+            }
+        }
+    }
+    s
+}
+
+pub fn frequency(s: &str) -> BTreeMap<char, i64> {
+    let mut char_counts : BTreeMap<char, i64> = BTreeMap::new();
     for ref c in s.chars() {
         let v = char_counts.entry(*c).or_insert(0);
         *v += 1;
@@ -25,7 +48,7 @@ pub fn frequency(s: &str) -> HashMap<char, usize> {
     char_counts
 }
 
-pub fn has_exact_count(n: usize, freq: &HashMap<char, usize>) -> bool {
+pub fn has_exact_count(n: i64, freq: &BTreeMap<char, i64>) -> bool {
     freq.into_iter().filter(|(_c, count)| **count == n).count() > 0
 }
 
