@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-pub fn day01_pt01(raw_input: &String) -> i64 {
+pub fn day02_pt01(raw_input: &String) -> i64 {
     let mut twos_count = 0;
     let mut threes_count = 0;
     for line in raw_input.lines() {
@@ -15,7 +15,7 @@ pub fn day01_pt01(raw_input: &String) -> i64 {
     twos_count * threes_count
 }
 
-pub fn day01_pt02(raw_input: &String) -> String {
+pub fn day02_pt02(raw_input: &String) -> String {
     let s = String::new();
     for id1 in raw_input.lines() {
         for id2 in raw_input.lines() {
