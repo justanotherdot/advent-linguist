@@ -5,10 +5,11 @@ use std::env::{args};
 
 fn main() -> std::io::Result<()> {
     let filename_pt01 : String = args().skip(1).take(1).collect();
-    let ref pt_01_input_buffer = input_buffer(filename_pt01)?;
+    let pt_01_input_buffer = input_buffer(filename_pt01)?;
 
-    println!("{:?}", internal::day02_pt01(pt_01_input_buffer));
-    println!("{}", internal::day02_pt02(pt_01_input_buffer));
+    let (a, b) = internal::day03(pt_01_input_buffer);
+    println!("day03, pt01 answer: {:?}", a);
+    println!("day03, pt02 answer: {:?}", b);
 
     Ok(())
 }

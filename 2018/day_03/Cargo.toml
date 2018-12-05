@@ -1,0 +1,9 @@
+[package]
+name = "day_03"
+version = "0.1.0"
+authors = ["Ryan James Spencer <spencer.ryanjames@gmail.com>"]
+
+[dependencies]
+
+[profile.release]
+debug = true
