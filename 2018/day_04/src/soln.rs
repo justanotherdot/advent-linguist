@@ -26,6 +26,8 @@ pub fn day_04(s: String) {
     }
     v.sort_by_key(|x| x.timestamp.to_owned());
 
+    let mut all_minutes: HashMap<(isize, u32), u32> = HashMap::new();
+
     let mut x = v.into_iter().fold(
         (-1, HashMap::new(), "".to_owned()),
         |mut acc: (isize, HashMap<isize, Vec<u32>>, String), log_entry: LogEntry| {
@@ -47,6 +49,7 @@ pub fn day_04(s: String) {
                         let end_time = log_entry.timestamp.parse::<DateTime<Utc>>().unwrap();
                         for m in start_time.minute()..end_time.minute() {
                             acc.1.entry(id).or_default().push(m);
+                            *all_minutes.entry((id, m)).or_insert(0) += 1;
                         }
                         return (acc.0, acc.1, "".to_owned());
                     }
@@ -66,6 +69,12 @@ pub fn day_04(s: String) {
         .into_iter()
         .max_by(|(_, v1), (_, v2)| v1.cmp(v2)).unwrap().0 as isize;
     println!("pt01: {}", id * most_mins);
+
+    println!("{:#?}", all_minutes);
+    let rv = all_minutes.into_iter()
+        .max_by(|(_, v1), (_, v2)| v1.cmp(&v2)).unwrap();
+    println!("{:?}", rv);
+    println!("pt02: {}", (rv.0).1 *  (rv.0).0 as u32);
     //println!("{:#?}", x);
 }
 
