@@ -4,14 +4,16 @@ use std::io::prelude::*;
 use std::fs::File;
 use std::env::{args};
 use soln::{
-    day05
+    day05_pt01,
+    day05_pt02,
 };
 
 fn main() -> std::io::Result<()> {
     let filename : String = args().skip(1).take(1).collect();
     let input_buffer = input_buffer(filename)?;
 
-    day05(input_buffer);
+    println!("pt01: {}", day05_pt01(&input_buffer));
+    println!("pt02: {}", day05_pt02(&input_buffer));
 
     Ok(())
 }
