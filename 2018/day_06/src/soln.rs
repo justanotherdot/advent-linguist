@@ -1,7 +1,7 @@
 extern crate regex;
 
 use self::regex::Regex;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::error::Error;
 use std::result;
 use std::str::FromStr;
@@ -21,7 +21,7 @@ enum Closest {
     Landmark(usize),
 }
 
-pub fn day06(s: &str) -> usize {
+pub fn day06(s: &str) -> (usize, usize) {
     let coords: Vec<Coord> = s.lines().map(|c| c.parse::<Coord>().unwrap()).collect();
     let bounds = find_bounds(&coords);
     let landmarks: Vec<(usize, &Coord)> = coords
@@ -35,6 +35,7 @@ pub fn day06(s: &str) -> usize {
     //   All 'landmarks' will be within that plane.
     assert_eq!(landmarks.len(), coords.len() - 4);
 
+    // Calculate pt01
     let mut markers: Vec<(Coord, Closest)> = vec![];
     for y in (bounds.1).0 + 1..(bounds.1).1 {
         for x in (bounds.0).0 + 1..(bounds.0).1 {
@@ -46,6 +47,19 @@ pub fn day06(s: &str) -> usize {
         }
     }
 
+    // Calculate pt02
+    let mut area: Vec<isize> = Vec::new();
+    for y in (bounds.1).0 + 1..(bounds.1).1 + 1 {
+        for x in (bounds.0).0 + 1..(bounds.0).1 + 1 {
+            let coord1 = Coord { x, y };
+            println!("{:?}", coord1);
+            let total_distance: isize = coords.iter().map(|coord2| coord2.distance(&coord1)).sum();
+            if total_distance < 10_000 {
+                area.push(total_distance);
+            }
+        }
+    }
+
     let mut freqs: HashMap<usize, usize> = HashMap::new();
     for (_, closest) in markers {
         if let Closest::Landmark(loc) = closest {
@@ -53,7 +67,7 @@ pub fn day06(s: &str) -> usize {
         }
     }
 
-    *freqs.values().max().unwrap()
+    (*freqs.values().max().unwrap(), area.len())
 }
 
 fn find_bounds(coords: &Vec<Coord>) -> ((isize, isize), (isize, isize)) {
